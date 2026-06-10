@@ -7,6 +7,7 @@ import com.ucr.repuestos_api.entities.Cita.Cita;
 
 public interface ICitaService {
     List<Cita> getAll();
+    List<Cita> getAllByCliente(Integer idCliente);
     Cita addCita(CitaRequestDto citaDto);
     Cita updateCita(Integer id, CitaRequestDto citaRequestDto);
     Cita getById(Integer id);
