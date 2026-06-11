@@ -34,6 +34,17 @@ public class VehiculoController {
         return ResponseEntity.ok(vehiculoMapper.toVehiculoResponseModelList(vehiculoFacade.getAll()));
     }
 
+    @GetMapping("/cliente/{idCliente}")
+    public ResponseEntity<List<VehiculoResponseModel>> findByCliente(@PathVariable("idCliente") Integer idCliente) {
+        return ResponseEntity.ok(vehiculoMapper.toVehiculoResponseModelList(vehiculoFacade.getByIdCliente(idCliente)));
+    }
+
+    @GetMapping("/{placa}")
+    public ResponseEntity<VehiculoResponseModel> findByPlaca(@PathVariable("placa") String placa) {
+        var dto = vehiculoFacade.getByPlaca(placa);
+        return ResponseEntity.ok(vehiculoMapper.toVehiculoResponseModel(dto));
+    }
+
     @PostMapping
     public VehiculoResponseDto save(@RequestBody VehiculoRequestModel vehiculoRequestModel) {
         var dto = vehiculoMapper.toVehiculoRequestDto(vehiculoRequestModel);

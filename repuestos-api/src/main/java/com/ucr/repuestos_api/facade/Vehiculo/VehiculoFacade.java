@@ -27,6 +27,16 @@ public class VehiculoFacade implements IVehiculoFacade {
     }
 
     @Override
+    public List<VehiculoResponseDto> getByIdCliente(Integer idCliente) {
+        return vehiculoMapper.toVehiculoResponseDtoList(vehiculoService.getByIdCliente(idCliente));
+    }
+
+    @Override
+    public VehiculoResponseDto getByPlaca(String placa) {
+        return vehiculoMapper.toVehiculoResponseDto(vehiculoService.getByPlaca(placa));
+    }
+
+    @Override
     @Transactional
     public VehiculoResponseDto addVehiculo(VehiculoRequestDto vehiculoRequestDto) {
         var entity = vehiculoService.addVehiculo(vehiculoRequestDto);

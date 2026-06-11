@@ -8,6 +8,10 @@ import com.ucr.repuestos_api.entities.Vehiculo.Vehiculo;
 public interface IVehiculoService {
     List<Vehiculo> getAll();
 
+    List<Vehiculo> getByIdCliente(Integer idCliente);
+
+    Vehiculo getByPlaca(String placa);
+
     Vehiculo addVehiculo(VehiculoRequestDto vehiculoRequestDto);
 
     Vehiculo updateVehiculo(String placa, VehiculoRequestDto vehiculoRequestDto);

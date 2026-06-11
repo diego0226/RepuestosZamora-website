@@ -8,6 +8,10 @@ import com.ucr.repuestos_api.dtos.Vehiculo.VehiculoResponseDto;
 public interface IVehiculoFacade {
     List<VehiculoResponseDto> getAll();
 
+    List<VehiculoResponseDto> getByIdCliente(Integer idCliente);
+
+    VehiculoResponseDto getByPlaca(String placa);
+
     VehiculoResponseDto addVehiculo(VehiculoRequestDto vehiculoRequestDto);
 
     VehiculoResponseDto updateVehiculo(String placa, VehiculoRequestDto vehiculoRequestDto);

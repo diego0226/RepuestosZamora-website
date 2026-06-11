@@ -1,9 +1,12 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { Layout } from "./components/Layout";
 import { LoginPage } from "./pages/LoginPage";
 import { CitaList } from "./components/CitaList";
 import { CitaDetail } from "./components/CitaDetail";
+import { VehiculoList } from "./components/VehiculoList";
+import { VehiculoDetail } from "./components/VehiculoDetail";
 import "./App.css";
 
 function App() {
@@ -16,7 +19,9 @@ function App() {
             path="/citas"
             element={
               <ProtectedRoute>
-                <CitaList />
+                <Layout>
+                  <CitaList />
+                </Layout>
               </ProtectedRoute>
             }
           />
@@ -24,7 +29,29 @@ function App() {
             path="/citas/:id"
             element={
               <ProtectedRoute>
-                <CitaDetail />
+                <Layout>
+                  <CitaDetail />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/vehiculo"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <VehiculoList />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/vehiculo/:placa"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <VehiculoDetail />
+                </Layout>
               </ProtectedRoute>
             }
           />

@@ -13,6 +13,8 @@ public interface VehiculoRepository extends JpaRepository<Vehiculo, String> {
 
     Optional<Vehiculo> findById(String placa);
 
+    List<Vehiculo> findByCliente_IdCliente(Integer idCliente);
+
     default List<Vehiculo> getAll() {
         return findAll();
     }

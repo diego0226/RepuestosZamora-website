@@ -7,7 +7,7 @@ import { useAuth } from "../contexts/AuthContext";
 export function CitaList() {
   const [citas, setCitas] = useState<Cita[]>([]);
   const [error, setError] = useState("");
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,7 +26,6 @@ export function CitaList() {
     <div>
       <div>
         <h1>Mis citas</h1>
-        <button onClick={logout}>Cerrar sesión</button>
       </div>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
