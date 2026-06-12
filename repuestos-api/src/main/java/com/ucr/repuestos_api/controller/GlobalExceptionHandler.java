@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.ucr.repuestos_api.Exceptions.CitaNotFoundException;
 import com.ucr.repuestos_api.Exceptions.ClienteNotFoundException;
+import com.ucr.repuestos_api.Exceptions.EmailAlreadyExistsException;
+import com.ucr.repuestos_api.Exceptions.InvalidCredentialsException;
 import com.ucr.repuestos_api.Exceptions.EmpleadoNotFoundException;
 import com.ucr.repuestos_api.Exceptions.RepuestoNotFoundException;
 import com.ucr.repuestos_api.Exceptions.RepuestoOServicioRequeridoException;
@@ -57,6 +59,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RepuestoOServicioRequeridoException.class)
     public ResponseEntity<ErrorDto> handleRepuestoOServicioRequeridoException(RepuestoOServicioRequeridoException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDto(400, ex.getMessage()));
+    }
+
+    // Maneja el error de credenciales inválidas en el login y responde con 401 Unauthorized
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ErrorDto> handleInvalidCredentialsException(InvalidCredentialsException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorDto(401, ex.getMessage()));
+    }
+
+    // Maneja el error de correo ya registrado en el registro y responde con 409 Conflict
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<ErrorDto> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorDto(409, ex.getMessage()));
     }
 
 }

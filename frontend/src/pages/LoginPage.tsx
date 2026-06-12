@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+// Importa Link además de useNavigate para agregar un enlace a la página de registro
+import { useNavigate, Link } from "react-router-dom";
 import { login } from "../services/AuthService";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -57,6 +58,11 @@ export function LoginPage() {
           {loading ? "Cargando..." : "Entrar"}
         </button>
       </form>
+
+      {/* Enlace hacia la página de registro para usuarios que aún no tienen cuenta */}
+      <p>
+        ¿No tenés cuenta? <Link to="/register">Registrate</Link>
+      </p>
     </div>
   );
 }
