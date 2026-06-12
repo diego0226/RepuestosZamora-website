@@ -7,16 +7,22 @@ import org.springframework.stereotype.Component;
 
 import com.ucr.repuestos_api.dtos.Servicio.ServicioDto;
 import com.ucr.repuestos_api.mappers.Servicio.ServicioMapper;
-import com.ucr.repuestos_api.services.Servicio.ServicioService;
+import com.ucr.repuestos_api.services.Servicio.IServicioService;
+
 @Component
-public class ServicioFacade implements IServicioFacade{
+public class ServicioFacade implements IServicioFacade {
     @Autowired
-    ServicioMapper servicioMapper; 
+    ServicioMapper servicioMapper;
     @Autowired
-    ServicioService servicioService; 
+    IServicioService servicioService;
+
     @Override
     public List<ServicioDto> getAll() {
         return servicioMapper.toServicioDtoList(servicioService.getAll());
     }
-    
+
+    @Override
+    public ServicioDto getById(Integer id) {
+        return servicioMapper.toServicioDto(servicioService.getById(id));
+    }
 }

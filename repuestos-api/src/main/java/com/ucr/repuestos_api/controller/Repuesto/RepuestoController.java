@@ -11,15 +11,21 @@ import com.ucr.repuestos_api.dtos.Repuesto.RepuestoDto;
 import com.ucr.repuestos_api.facade.Repuesto.IRepuestoFacade;
 
 import org.springframework.web.bind.annotation.GetMapping;
-
+import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/api/repuesto")
 public class RepuestoController {
     @Autowired
-    private IRepuestoFacade repuestoFacade; 
-    @GetMapping()
+    private IRepuestoFacade repuestoFacade;
+
+    @GetMapping
     public ResponseEntity<List<RepuestoDto>> findAll() {
         return ResponseEntity.ok(repuestoFacade.getAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<RepuestoDto> findById(@PathVariable("id") Integer id) {
+        return ResponseEntity.ok(repuestoFacade.getById(id));
     }
 }

@@ -6,4 +6,5 @@ import com.ucr.repuestos_api.entities.Repuesto.Repuesto;
 
 public interface IRepuestoService {
      List<Repuesto> getAll();
+     Repuesto getById(Integer id);
 }

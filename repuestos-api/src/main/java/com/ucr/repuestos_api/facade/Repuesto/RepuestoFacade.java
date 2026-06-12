@@ -1,6 +1,6 @@
 package com.ucr.repuestos_api.facade.Repuesto;
 
-import com.ucr.repuestos_api.services.Repuesto.RepuestoService;
+import com.ucr.repuestos_api.services.Repuesto.IRepuestoService;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +14,15 @@ public class RepuestoFacade implements IRepuestoFacade{
     @Autowired
     RepuestoMapper repuestoMapper; 
     @Autowired
-    RepuestoService repuestoService; 
+    IRepuestoService repuestoService;
 
     @Override
     public List<RepuestoDto> getAll() {
        return repuestoMapper.toRepuestoDtoList(repuestoService.getAll());
+    }
+
+    @Override
+    public RepuestoDto getById(Integer id) {
+        return repuestoMapper.toRepuestoDto(repuestoService.getById(id));
     }
 }

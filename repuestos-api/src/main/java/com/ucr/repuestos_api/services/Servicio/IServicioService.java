@@ -6,4 +6,5 @@ import com.ucr.repuestos_api.entities.Servicio.Servicio;
 
 public interface IServicioService {
     List<Servicio> getAll();
-} 
+    Servicio getById(Integer id);
+}
