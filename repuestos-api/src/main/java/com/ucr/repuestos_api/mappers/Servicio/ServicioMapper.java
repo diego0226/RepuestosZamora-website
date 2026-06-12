@@ -11,6 +11,7 @@ import com.ucr.repuestos_api.entities.Servicio.Servicio;
 public class ServicioMapper {
     public ServicioDto toServicioDto(Servicio servicio) {
         return new ServicioDto(
+                servicio.getIdServicio(),
                 servicio.getNombreServicio(),
                 servicio.getDescripcion(),
                 servicio.getPrecio()

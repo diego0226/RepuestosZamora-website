@@ -1,150 +1,109 @@
-// Importa el hook useState para el mensaje de error del servidor
 import { useState } from "react";
-// Importa el hook useForm de react-hook-form para manejar el formulario
 import { useForm } from "react-hook-form";
-// Importa el hook para navegar entre páginas y el componente Link para enlaces de navegación
 import { useNavigate, Link } from "react-router-dom";
-// Importa la función de registro y la interfaz de datos del servicio de autenticación
+import { User, Mail, Phone, Shield, ChevronRight, AlertTriangle, ArrowLeft } from "lucide-react";
 import { register as registerCliente, type RegisterData } from "../services/AuthService";
-// Importa el hook para acceder y modificar el contexto de autenticación global
 import { useAuth } from "../contexts/AuthContext";
+import { Logo } from "../components/ui/Logo";
+import { Field } from "../components/ui/Field";
+import { Button } from "../components/ui/Button";
+import { ViewIn } from "../components/ui/ViewIn";
 
-// Componente de página para el registro de nuevos clientes en el sistema
 export function RegisterPage() {
-  // useForm administra los valores, la validación y el estado de envío del formulario.
-  // - register: conecta cada input al formulario.
-  // - handleSubmit: valida y, si todo está bien, ejecuta nuestra función onSubmit.
-  // - formState.errors: errores de validación por campo.
-  // - formState.isSubmitting: true mientras se procesa el envío (reemplaza el estado loading manual).
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<RegisterData>();
-
-  // Estado para almacenar y mostrar mensajes de error si el registro falla en el servidor
   const [error, setError] = useState("");
-
-  // Obtiene la función setUser del contexto para guardar al usuario tras el registro exitoso
   const { setUser } = useAuth();
-  // Hook de React Router para redirigir al usuario a otra ruta programáticamente
   const navigate = useNavigate();
 
-  // Función que se ejecuta solo cuando react-hook-form valida correctamente el formulario.
-  // Recibe directamente los datos tipados del formulario, sin necesidad de manejar el evento.
   async function onSubmit(data: RegisterData) {
-    setError(""); // Limpia cualquier mensaje de error previo que se estuviera mostrando
-
+    setError("");
     try {
-      // Llama a la función register del servicio; envía los datos al backend y espera la respuesta
       const user = await registerCliente(data);
-      // Guarda los datos del usuario recién registrado en el contexto global y en localStorage
       setUser(user);
-      // Redirige al perfil del usuario para que vea su información recién creada
-      navigate("/perfil");
+      navigate("/dashboard");
     } catch (err) {
-      // Si ocurre un error (correo duplicado, error del servidor, etc.), lo muestra en pantalla
       setError(err instanceof Error ? err.message : "Error al registrarse");
     }
   }
 
   return (
-    <div>
-      <h1>Crear cuenta</h1>
+    <div className="min-h-[100svh] bg-neutral tex-grid grid place-items-center p-5 py-10">
+      <ViewIn className="w-full max-w-[460px]">
+        <Link to="/" className="mono inline-flex items-center gap-2 text-secondary text-[12px] uppercase font-bold mb-5" style={{ letterSpacing: "0.1em" }}>
+          <ArrowLeft size={16} /> Volver al inicio
+        </Link>
+        <div className="surface rounded-lg overflow-hidden">
+          <div className="hazard h-[5px]" />
+          <div className="px-[30px] pt-7 pb-8">
+            <div className="flex justify-center mb-5"><Logo /></div>
+            <div className="mono text-[11px] text-primary uppercase font-bold" style={{ letterSpacing: "0.2em" }}>
+              Nueva cuenta
+            </div>
+            <h2 className="display text-white text-[28px] mt-2 mb-6">REGISTRARSE</h2>
 
-      {/* handleSubmit valida los campos y solo entonces llama a onSubmit. Previene el recargado de la página */}
-      <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-[15px]">
+              <div className="grid grid-cols-2 gap-3">
+                <Field
+                  label="Nombre"
+                  icon={User}
+                  placeholder="Andrés"
+                  error={errors.nombre?.message}
+                  {...register("nombre", { required: "El nombre es obligatorio" })}
+                />
+                <Field
+                  label="Apellido"
+                  placeholder="Solano"
+                  error={errors.apellido1?.message}
+                  {...register("apellido1", { required: "El apellido es obligatorio" })}
+                />
+              </div>
+              <Field label="Segundo apellido" placeholder="Vargas" {...register("apellido2")} />
+              <Field
+                label="Correo"
+                type="email"
+                icon={Mail}
+                placeholder="vos@correo.com"
+                error={errors.correo?.message}
+                {...register("correo", {
+                  required: "El correo es obligatorio",
+                  pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Formato de correo inválido" },
+                })}
+              />
+              <Field label="Teléfono" type="tel" icon={Phone} placeholder="8888-8888" {...register("telefono")} />
+              <Field
+                label="Contraseña"
+                type="password"
+                icon={Shield}
+                placeholder="••••••••"
+                error={errors.contrasena?.message}
+                {...register("contrasena", {
+                  required: "La contraseña es obligatoria",
+                  minLength: { value: 8, message: "La contraseña debe tener al menos 8 caracteres" },
+                })}
+              />
 
-        {/* Campo para el nombre del cliente */}
-        <div>
-          <label htmlFor="nombre">Nombre</label>
-          <input
-            id="nombre"
-            type="text"
-            {...register("nombre", { required: "El nombre es obligatorio" })}
-          />
-          {/* Muestra el error de validación de este campo si existe */}
-          {errors.nombre && <p style={{ color: "red" }}>{errors.nombre.message}</p>}
+              {error && (
+                <div className="flex gap-2 items-center text-[#ff5252] text-[13px]">
+                  <AlertTriangle size={16} /> {error}
+                </div>
+              )}
+
+              <Button type="submit" variant="primary" size="lg" full iconRight={ChevronRight} disabled={isSubmitting} className="mt-1">
+                {isSubmitting ? "Creando cuenta…" : "Crear mi cuenta"}
+              </Button>
+            </form>
+
+            <div className="text-center mt-5 text-[13.5px] text-secondary">
+              ¿Ya tenés cuenta?{" "}
+              <Link to="/login" className="text-primary font-bold">Iniciá sesión</Link>
+            </div>
+          </div>
         </div>
-
-        {/* Campo para el primer apellido */}
-        <div>
-          <label htmlFor="apellido1">Primer apellido</label>
-          <input
-            id="apellido1"
-            type="text"
-            {...register("apellido1", { required: "El primer apellido es obligatorio" })}
-          />
-          {errors.apellido1 && <p style={{ color: "red" }}>{errors.apellido1.message}</p>}
-        </div>
-
-        {/* Campo para el segundo apellido (no es requerido) */}
-        <div>
-          <label htmlFor="apellido2">Segundo apellido</label>
-          <input
-            id="apellido2"
-            type="text"
-            {...register("apellido2")}
-          />
-        </div>
-
-        {/* Campo para el correo electrónico */}
-        <div>
-          <label htmlFor="correo">Correo electrónico</label>
-          <input
-            id="correo"
-            type="email"
-            {...register("correo", {
-              required: "El correo es obligatorio",
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "Formato de correo inválido",
-              },
-            })}
-          />
-          {errors.correo && <p style={{ color: "red" }}>{errors.correo.message}</p>}
-        </div>
-
-        {/* Campo para la contraseña; valida un mínimo de 8 caracteres */}
-        <div>
-          <label htmlFor="contrasena">Contraseña</label>
-          <input
-            id="contrasena"
-            type="password"
-            {...register("contrasena", {
-              required: "La contraseña es obligatoria",
-              minLength: {
-                value: 8,
-                message: "La contraseña debe tener al menos 8 caracteres",
-              },
-            })}
-          />
-          {errors.contrasena && <p style={{ color: "red" }}>{errors.contrasena.message}</p>}
-        </div>
-
-        {/* Campo para el teléfono (type="tel" muestra teclado numérico en móviles; no es requerido) */}
-        <div>
-          <label htmlFor="telefono">Teléfono</label>
-          <input
-            id="telefono"
-            type="tel"
-            {...register("telefono")}
-          />
-        </div>
-
-        {/* Muestra el mensaje de error del servidor solo si el estado error no está vacío */}
-        {error && <p style={{ color: "red" }}>{error}</p>}
-
-        {/* Botón de envío que se deshabilita mientras isSubmitting es true para evitar envíos duplicados */}
-        <button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Registrando..." : "Crear cuenta"} {/* Cambia el texto según el estado de envío */}
-        </button>
-      </form>
-
-      {/* Enlace para ir al login si el usuario ya tiene una cuenta */}
-      <p>
-        ¿Ya tenés cuenta? <Link to="/login">Iniciá sesión</Link>
-      </p>
+      </ViewIn>
     </div>
   );
 }

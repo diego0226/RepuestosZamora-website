@@ -1,58 +1,72 @@
-// Importa el hook personalizado para acceder al contexto de autenticación global
+import { useNavigate } from "react-router-dom";
+import { User, Mail, Phone, Calendar, LogOut } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
+import { SectionTitle } from "../components/ui/SectionTitle";
+import { Button } from "../components/ui/Button";
+import { ViewIn } from "../components/ui/ViewIn";
+import { fechaLegible } from "../components/ui/format";
 
-// Componente de página que muestra todos los datos del perfil del cliente autenticado
 export function PerfilPage() {
-  // Obtiene el objeto "user" con los datos del cliente desde el contexto de autenticación
-  // "user" es del tipo AuthUser y contiene: idCliente, nombre, apellido1, apellido2, correo, telefono, fecha_registro
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
-  // Verificación de seguridad: si por algún motivo no hay usuario en el contexto, muestra un aviso
-  // En condiciones normales esto no ocurre porque la ruta /perfil está protegida por ProtectedRoute
   if (!user) {
-    return <p>No hay información del usuario disponible.</p>;
+    return <p className="text-secondary">No hay información del usuario disponible.</p>;
   }
 
+  function handleLogout() {
+    logout();
+    navigate("/login");
+  }
+
+  const datos: [string, string, typeof User][] = [
+    ["Nombre completo", `${user.nombre} ${user.apellido1} ${user.apellido2 ?? ""}`.trim(), User],
+    ["Correo", user.correo, Mail],
+    ["Teléfono", user.telefono || "No registrado", Phone],
+    ["Miembro desde", user.fecha_registro ? fechaLegible(user.fecha_registro) : "No disponible", Calendar],
+  ];
+
   return (
-    <div>
-      <h1>Mi perfil</h1>
+    <ViewIn className="max-w-[760px]">
+      <SectionTitle kicker="Tu cuenta" title="MI PERFIL" />
 
-      {/* Sección que agrupa todos los datos del cliente autenticado */}
-      <section>
-
-        {/* Muestra el nombre completo del cliente uniendo nombre y ambos apellidos */}
-        <div>
-          <strong>Nombre completo: </strong>
-          {/* Concatena los tres campos de nombre con espacios entre ellos */}
-          <span>{user.nombre} {user.apellido1} {user.apellido2}</span>
+      <div className="surface rounded-xl overflow-hidden">
+        <div className="tex-carbon flex gap-5 items-center px-7 py-7" style={{ background: "#1a1a1a", borderBottom: "1px solid var(--line)" }}>
+          <div className="corner-cut w-[76px] h-[76px] rounded-xl grid place-items-center shrink-0 bg-primary">
+            <span className="display text-white text-[32px]">{user.nombre[0]}{user.apellido1[0]}</span>
+          </div>
+          <div>
+            <div className="display text-white text-[26px]">{user.nombre} {user.apellido1}</div>
+            <div className="mono text-[12.5px] text-secondary mt-1">Cliente #{user.idCliente}</div>
+          </div>
         </div>
 
-        {/* Muestra el correo electrónico del cliente */}
-        <div>
-          <strong>Correo: </strong>
-          <span>{user.correo}</span>
-        </div>
+        <div className="p-7">
+          <div className="mono text-[11px] text-secondary uppercase font-bold mb-5" style={{ letterSpacing: "0.2em" }}>
+            Datos personales
+          </div>
 
-        {/* Muestra el teléfono del cliente; si está vacío o null muestra un texto alternativo */}
-        <div>
-          <strong>Teléfono: </strong>
-          {/* El operador || muestra "No registrado" si telefono es null, undefined o string vacío */}
-          <span>{user.telefono || "No registrado"}</span>
-        </div>
+          <div className="grid gap-0" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(220px,1fr))" }}>
+            {datos.map(([k, v, Icon]) => (
+              <div key={k} className="flex gap-3 items-center py-3.5" style={{ borderBottom: "1px solid var(--line)" }}>
+                <Icon size={18} style={{ color: "var(--primary)" }} className="shrink-0" />
+                <div>
+                  <div className="mono text-[10.5px] text-secondary uppercase" style={{ letterSpacing: "0.08em" }}>{k}</div>
+                  <div className="text-white text-[14.5px] font-semibold mt-0.5">{v}</div>
+                </div>
+              </div>
+            ))}
+          </div>
 
-        {/* Muestra la fecha de registro del cliente en formato local de Costa Rica */}
-        <div>
-          <strong>Fecha de registro: </strong>
-          <span>
-            {user.fecha_registro
-              // Si existe la fecha, la convierte a formato legible en español costarricense (ej: "15/1/2024")
-              ? new Date(user.fecha_registro).toLocaleDateString("es-CR")
-              // Si la fecha no está disponible por algún motivo, muestra este texto de reemplazo
-              : "No disponible"}
-          </span>
+          <div className="mt-[26px] pt-[22px] flex justify-between items-center gap-3.5 flex-wrap" style={{ borderTop: "1px solid var(--line)" }}>
+            <div>
+              <div className="font-bold text-white text-[15px]">Cerrar sesión</div>
+              <div className="text-secondary text-[13px] mt-0.5">Volvés a la página de inicio.</div>
+            </div>
+            <Button variant="outlineRed" icon={LogOut} onClick={handleLogout}>Cerrar sesión</Button>
+          </div>
         </div>
-
-      </section>
-    </div>
+      </div>
+    </ViewIn>
   );
 }
