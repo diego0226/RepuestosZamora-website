@@ -1,55 +1,43 @@
-// Importa los hooks de estado (useState) y el tipo para el evento de formulario desde React
-import { useState, type FormEvent } from "react";
+// Importa el hook useState para el mensaje de error del servidor
+import { useState } from "react";
+// Importa el hook useForm de react-hook-form para manejar el formulario
+import { useForm } from "react-hook-form";
 // Importa el hook para navegar entre páginas y el componente Link para enlaces de navegación
 import { useNavigate, Link } from "react-router-dom";
 // Importa la función de registro y la interfaz de datos del servicio de autenticación
-import { register, type RegisterData } from "../services/AuthService";
+import { register as registerCliente, type RegisterData } from "../services/AuthService";
 // Importa el hook para acceder y modificar el contexto de autenticación global
 import { useAuth } from "../contexts/AuthContext";
 
 // Componente de página para el registro de nuevos clientes en el sistema
 export function RegisterPage() {
-  // Estado para almacenar el valor del campo nombre mientras el usuario escribe
-  const [nombre, setNombre] = useState("");
-  // Estado para almacenar el primer apellido
-  const [apellido1, setApellido1] = useState("");
-  // Estado para almacenar el segundo apellido (campo opcional)
-  const [apellido2, setApellido2] = useState("");
-  // Estado para almacenar el correo electrónico
-  const [correo, setCorreo] = useState("");
-  // Estado para almacenar la contraseña
-  const [contrasena, setContrasena] = useState("");
-  // Estado para almacenar el teléfono (campo opcional)
-  const [telefono, setTelefono] = useState("");
-  // Estado para almacenar y mostrar mensajes de error si el registro falla
+  // useForm administra los valores, la validación y el estado de envío del formulario.
+  // - register: conecta cada input al formulario.
+  // - handleSubmit: valida y, si todo está bien, ejecuta nuestra función onSubmit.
+  // - formState.errors: errores de validación por campo.
+  // - formState.isSubmitting: true mientras se procesa el envío (reemplaza el estado loading manual).
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterData>();
+
+  // Estado para almacenar y mostrar mensajes de error si el registro falla en el servidor
   const [error, setError] = useState("");
-  // Estado para deshabilitar el botón de envío mientras se procesa la solicitud
-  const [loading, setLoading] = useState(false);
 
   // Obtiene la función setUser del contexto para guardar al usuario tras el registro exitoso
   const { setUser } = useAuth();
   // Hook de React Router para redirigir al usuario a otra ruta programáticamente
   const navigate = useNavigate();
 
-  // Función que se ejecuta cuando el usuario envía el formulario de registro
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault(); // Previene el comportamiento por defecto del formulario (recargar la página)
-    setError("");       // Limpia cualquier mensaje de error previo que se estuviera mostrando
-    setLoading(true);   // Activa el estado de carga para mostrar "Registrando..." y deshabilitar el botón
-
-    // Agrupa todos los valores de los campos en un objeto con la estructura que espera el servicio
-    const data: RegisterData = {
-      nombre,
-      apellido1,
-      apellido2,
-      correo,
-      contrasena,
-      telefono,
-    };
+  // Función que se ejecuta solo cuando react-hook-form valida correctamente el formulario.
+  // Recibe directamente los datos tipados del formulario, sin necesidad de manejar el evento.
+  async function onSubmit(data: RegisterData) {
+    setError(""); // Limpia cualquier mensaje de error previo que se estuviera mostrando
 
     try {
       // Llama a la función register del servicio; envía los datos al backend y espera la respuesta
-      const user = await register(data);
+      const user = await registerCliente(data);
       // Guarda los datos del usuario recién registrado en el contexto global y en localStorage
       setUser(user);
       // Redirige al perfil del usuario para que vea su información recién creada
@@ -57,8 +45,6 @@ export function RegisterPage() {
     } catch (err) {
       // Si ocurre un error (correo duplicado, error del servidor, etc.), lo muestra en pantalla
       setError(err instanceof Error ? err.message : "Error al registrarse");
-    } finally {
-      setLoading(false); // Desactiva el estado de carga, tanto si el registro fue exitoso como si falló
     }
   }
 
@@ -66,8 +52,8 @@ export function RegisterPage() {
     <div>
       <h1>Crear cuenta</h1>
 
-      {/* Formulario de registro que llama a handleSubmit cuando el usuario hace clic en "Crear cuenta" */}
-      <form onSubmit={handleSubmit}>
+      {/* handleSubmit valida los campos y solo entonces llama a onSubmit. Previene el recargado de la página */}
+      <form onSubmit={handleSubmit(onSubmit)}>
 
         {/* Campo para el nombre del cliente */}
         <div>
@@ -75,10 +61,10 @@ export function RegisterPage() {
           <input
             id="nombre"
             type="text"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)} // Actualiza el estado cada vez que el usuario escribe
-            required // HTML5: no permite enviar el formulario si este campo está vacío
+            {...register("nombre", { required: "El nombre es obligatorio" })}
           />
+          {/* Muestra el error de validación de este campo si existe */}
+          {errors.nombre && <p style={{ color: "red" }}>{errors.nombre.message}</p>}
         </div>
 
         {/* Campo para el primer apellido */}
@@ -87,10 +73,9 @@ export function RegisterPage() {
           <input
             id="apellido1"
             type="text"
-            value={apellido1}
-            onChange={(e) => setApellido1(e.target.value)}
-            required
+            {...register("apellido1", { required: "El primer apellido es obligatorio" })}
           />
+          {errors.apellido1 && <p style={{ color: "red" }}>{errors.apellido1.message}</p>}
         </div>
 
         {/* Campo para el segundo apellido (no es requerido) */}
@@ -99,34 +84,42 @@ export function RegisterPage() {
           <input
             id="apellido2"
             type="text"
-            value={apellido2}
-            onChange={(e) => setApellido2(e.target.value)}
+            {...register("apellido2")}
           />
         </div>
 
-        {/* Campo para el correo electrónico (type="email" valida el formato automáticamente) */}
+        {/* Campo para el correo electrónico */}
         <div>
           <label htmlFor="correo">Correo electrónico</label>
           <input
             id="correo"
             type="email"
-            value={correo}
-            onChange={(e) => setCorreo(e.target.value)}
-            required
+            {...register("correo", {
+              required: "El correo es obligatorio",
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: "Formato de correo inválido",
+              },
+            })}
           />
+          {errors.correo && <p style={{ color: "red" }}>{errors.correo.message}</p>}
         </div>
 
-        {/* Campo para la contraseña; minLength valida un mínimo de 8 caracteres en el cliente */}
+        {/* Campo para la contraseña; valida un mínimo de 8 caracteres */}
         <div>
           <label htmlFor="contrasena">Contraseña</label>
           <input
             id="contrasena"
             type="password"
-            value={contrasena}
-            onChange={(e) => setContrasena(e.target.value)}
-            minLength={8} // Validación básica en el navegador antes de enviar al servidor
-            required
+            {...register("contrasena", {
+              required: "La contraseña es obligatoria",
+              minLength: {
+                value: 8,
+                message: "La contraseña debe tener al menos 8 caracteres",
+              },
+            })}
           />
+          {errors.contrasena && <p style={{ color: "red" }}>{errors.contrasena.message}</p>}
         </div>
 
         {/* Campo para el teléfono (type="tel" muestra teclado numérico en móviles; no es requerido) */}
@@ -135,17 +128,16 @@ export function RegisterPage() {
           <input
             id="telefono"
             type="tel"
-            value={telefono}
-            onChange={(e) => setTelefono(e.target.value)}
+            {...register("telefono")}
           />
         </div>
 
-        {/* Muestra el mensaje de error solo si el estado error no está vacío */}
+        {/* Muestra el mensaje de error del servidor solo si el estado error no está vacío */}
         {error && <p style={{ color: "red" }}>{error}</p>}
 
-        {/* Botón de envío que se deshabilita mientras loading es true para evitar envíos duplicados */}
-        <button type="submit" disabled={loading}>
-          {loading ? "Registrando..." : "Crear cuenta"} {/* Cambia el texto según el estado de carga */}
+        {/* Botón de envío que se deshabilita mientras isSubmitting es true para evitar envíos duplicados */}
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Registrando..." : "Crear cuenta"} {/* Cambia el texto según el estado de envío */}
         </button>
       </form>
 
