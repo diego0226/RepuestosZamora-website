@@ -27,6 +27,17 @@ public class VehiculoService implements IVehiculoService {
     }
 
     @Override
+    public List<Vehiculo> getByIdCliente(Integer idCliente) {
+        return vehiculoRepository.findByCliente_IdCliente(idCliente);
+    }
+
+    @Override
+    public Vehiculo getByPlaca(String placa) {
+        return vehiculoRepository.findById(placa)
+                .orElseThrow(() -> new VehiculoNotFoundException("Vehiculo no encontrado"));
+    }
+
+    @Override
     public Vehiculo addVehiculo(VehiculoRequestDto vehiculoRequestDto) {
         var cliente = clienteRepository.findById(vehiculoRequestDto.getIdCliente())
                 .orElseThrow(() -> new ClienteNotFoundException("Cliente no encontrado"));

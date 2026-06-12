@@ -13,6 +13,8 @@ public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
 
     Optional<Cliente> findById(Integer id_cliente);
 
+    Optional<Cliente> findByCorreo(String correo);
+
     default List<Cliente> getAll() {
         return findAll();
     }

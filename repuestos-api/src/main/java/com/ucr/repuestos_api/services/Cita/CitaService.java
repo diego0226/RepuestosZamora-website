@@ -43,6 +43,11 @@ public class CitaService implements ICitaService {
     }
 
     @Override
+    public List<Cita> getAllByCliente(Integer idCliente) {
+        return citaRepository.findByCliente_IdCliente(idCliente);
+    }
+
+    @Override
     public Cita addCita(CitaRequestDto citaDto) {
         var cliente = clienteRepository.findById(citaDto.getIdCliente())
                 .orElseThrow(() -> new ClienteNotFoundException("Cliente no encontrado"));
@@ -107,6 +112,6 @@ public class CitaService implements ICitaService {
         var cita = citaRepository.findById(id)
                 .orElseThrow(() -> new CitaNotFoundException("Cita no encontrada"));
         cita.setEstado(EstadoCita.cancelada);
-        citaRepository.delete(cita);
+        citaRepository.save(cita);
     }
 }

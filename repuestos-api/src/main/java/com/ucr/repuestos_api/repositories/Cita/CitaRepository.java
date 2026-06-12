@@ -12,6 +12,8 @@ import com.ucr.repuestos_api.entities.Cita.Cita;
 public interface CitaRepository extends JpaRepository<Cita, Integer> {
     Optional<Cita> findById(Integer id);
 
+    List<Cita> findByCliente_IdCliente(Integer idCliente);
+
     default List<Cita> getAll() {
         return findAll();
     }

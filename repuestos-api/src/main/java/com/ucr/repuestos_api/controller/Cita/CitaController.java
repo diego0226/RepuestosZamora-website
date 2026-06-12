@@ -27,9 +27,9 @@ public class CitaController {
     @Autowired
     private CitaMapper citaMapper;
 
-    @GetMapping
-    public ResponseEntity<List<CitaResponseModel>> findAll() {
-        return ResponseEntity.ok(citaMapper.toCitaResponseModelList(citaFacade.getAll()));
+    @GetMapping(path = "/cliente/{idCliente}")
+    public ResponseEntity<List<CitaResponseModel>> findByCliente(@PathVariable("idCliente") Integer idCliente) {
+        return ResponseEntity.ok(citaMapper.toCitaResponseModelList(citaFacade.getAllByCliente(idCliente)));
     }
 
     @PostMapping

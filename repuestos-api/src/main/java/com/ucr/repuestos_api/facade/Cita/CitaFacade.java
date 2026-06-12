@@ -23,6 +23,11 @@ public class CitaFacade implements ICitaFacade{
         return citaMapper.toCitaDtoList(citaService.getAll());
     }
 
+    @Override
+    public List<CitaResponseDto> getAllByCliente(Integer idCliente) {
+        return citaMapper.toCitaDtoList(citaService.getAllByCliente(idCliente));
+    }
+
 	@Override
     @Transactional
 	public CitaResponseDto addCita(CitaRequestDto citaDto) {
