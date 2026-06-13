@@ -1,0 +1,20 @@
+[
+  {
+    "idServicio": 1,
+    "nombreServicio": "Cambio de aceite",
+    "descripcion": "Cambio de aceite y filtro con productos de marca garantizada.",
+    "precio": 18000
+  },
+  {
+    "idServicio": 2,
+    "nombreServicio": "Revisión de frenos",
+    "descripcion": "Inspección completa de pastillas, discos y líquido de frenos.",
+    "precio": 25000
+  },
+  {
+    "idServicio": 3,
+    "nombreServicio": "Diagnóstico A/C",
+    "descripcion": "Diagnóstico del sistema de aire acondicionado con equipo especializado.",
+    "precio": 15000
+  }
+]

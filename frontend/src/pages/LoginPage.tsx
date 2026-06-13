@@ -50,12 +50,13 @@ export function LoginPage() {
             </div>
             <h2 className="display text-white text-[28px] mt-2 mb-6">INICIAR SESIÓN</h2>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-[15px]">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-[15px]" data-cy="login-form">
               <Field
                 label="Correo"
                 type="email"
                 icon={Mail}
                 placeholder="vos@correo.com"
+                data-cy="login-correo"
                 error={errors.correo?.message}
                 {...register("correo", {
                   required: "El correo es obligatorio",
@@ -67,17 +68,18 @@ export function LoginPage() {
                 type="password"
                 icon={Shield}
                 placeholder="••••••••"
+                data-cy="login-contrasena"
                 error={errors.contrasena?.message}
                 {...register("contrasena", { required: "La contraseña es obligatoria" })}
               />
 
               {error && (
-                <div className="flex gap-2 items-center text-[#ff5252] text-[13px]">
+                <div className="flex gap-2 items-center text-[#ff5252] text-[13px]" data-cy="login-error">
                   <AlertTriangle size={16} /> {error}
                 </div>
               )}
 
-              <Button type="submit" variant="primary" size="lg" full iconRight={ChevronRight} disabled={isSubmitting} className="mt-1">
+              <Button type="submit" variant="primary" size="lg" full iconRight={ChevronRight} disabled={isSubmitting} className="mt-1" data-cy="login-submit">
                 {isSubmitting ? "Entrando…" : "Entrar al panel"}
               </Button>
             </form>

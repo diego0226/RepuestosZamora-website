@@ -45,40 +45,44 @@ export function RegisterPage() {
             </div>
             <h2 className="display text-white text-[28px] mt-2 mb-6">REGISTRARSE</h2>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-[15px]">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-[15px]" data-cy="register-form">
               <div className="grid grid-cols-2 gap-3">
                 <Field
                   label="Nombre"
                   icon={User}
                   placeholder="Andrés"
+                  data-cy="register-nombre"
                   error={errors.nombre?.message}
                   {...register("nombre", { required: "El nombre es obligatorio" })}
                 />
                 <Field
                   label="Apellido"
                   placeholder="Solano"
+                  data-cy="register-apellido1"
                   error={errors.apellido1?.message}
                   {...register("apellido1", { required: "El apellido es obligatorio" })}
                 />
               </div>
-              <Field label="Segundo apellido" placeholder="Vargas" {...register("apellido2")} />
+              <Field label="Segundo apellido" placeholder="Vargas" data-cy="register-apellido2" {...register("apellido2")} />
               <Field
                 label="Correo"
                 type="email"
                 icon={Mail}
                 placeholder="vos@correo.com"
+                data-cy="register-correo"
                 error={errors.correo?.message}
                 {...register("correo", {
                   required: "El correo es obligatorio",
                   pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Formato de correo inválido" },
                 })}
               />
-              <Field label="Teléfono" type="tel" icon={Phone} placeholder="8888-8888" {...register("telefono")} />
+              <Field label="Teléfono" type="tel" icon={Phone} placeholder="8888-8888" data-cy="register-telefono" {...register("telefono")} />
               <Field
                 label="Contraseña"
                 type="password"
                 icon={Shield}
                 placeholder="••••••••"
+                data-cy="register-contrasena"
                 error={errors.contrasena?.message}
                 {...register("contrasena", {
                   required: "La contraseña es obligatoria",
@@ -87,12 +91,12 @@ export function RegisterPage() {
               />
 
               {error && (
-                <div className="flex gap-2 items-center text-[#ff5252] text-[13px]">
+                <div className="flex gap-2 items-center text-[#ff5252] text-[13px]" data-cy="register-error">
                   <AlertTriangle size={16} /> {error}
                 </div>
               )}
 
-              <Button type="submit" variant="primary" size="lg" full iconRight={ChevronRight} disabled={isSubmitting} className="mt-1">
+              <Button type="submit" variant="primary" size="lg" full iconRight={ChevronRight} disabled={isSubmitting} className="mt-1" data-cy="register-submit">
                 {isSubmitting ? "Creando cuenta…" : "Crear mi cuenta"}
               </Button>
             </form>

@@ -51,8 +51,8 @@ export function LandingPage() {
         <div className="max-w-[1180px] mx-auto px-6 py-4 flex items-center justify-between">
           <Logo />
           <div className="flex gap-2.5">
-            <Button variant="ghost" onClick={() => navigate("/login")}>Iniciar sesión</Button>
-            <Button variant="primary" icon={User} onClick={() => navigate("/register")}>Registrarse</Button>
+            <Button variant="ghost" data-cy="nav-login" onClick={() => navigate("/login")}>Iniciar sesión</Button>
+            <Button variant="primary" icon={User} data-cy="nav-register" onClick={() => navigate("/register")}>Registrarse</Button>
           </div>
         </div>
       </header>
@@ -74,10 +74,10 @@ export function LandingPage() {
               comprá repuestos desde un solo panel.
             </p>
             <div className="flex gap-3 mt-[30px] flex-wrap">
-              <Button variant="primary" size="lg" iconRight={ChevronRight} onClick={() => navigate("/register")}>
+              <Button variant="primary" size="lg" iconRight={ChevronRight} data-cy="hero-register" onClick={() => navigate("/register")}>
                 Crear cuenta gratis
               </Button>
-              <Button variant="ghost" size="lg" onClick={() => navigate("/login")}>Ya tengo cuenta</Button>
+              <Button variant="ghost" size="lg" data-cy="hero-login" onClick={() => navigate("/login")}>Ya tengo cuenta</Button>
             </div>
             <div className="flex gap-10 mt-11 flex-wrap">
               {STATS.map((s) => (
@@ -144,11 +144,11 @@ export function LandingPage() {
           <h2 className="display text-white text-center mt-2.5 mb-9" style={{ fontSize: "clamp(28px,4vw,40px)" }}>
             SERVICIOS DEL TALLER
           </h2>
-          <div className="grid gap-3.5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))" }}>
+          <div className="grid gap-3.5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))" }} data-cy="servicios-grid">
             {servicios.slice(0, 6).map((s) => {
               const Icon = iconParaServicio(s.nombreServicio);
               return (
-                <div key={s.idServicio} className="surface surface-hover rounded-lg p-[22px]">
+                <div key={s.idServicio} className="surface surface-hover rounded-lg p-[22px]" data-cy="servicio-card">
                   <div className="w-11 h-11 rounded-md grid place-items-center text-primary" style={{ background: "rgba(230,0,0,0.12)" }}>
                     <Icon size={24} />
                   </div>

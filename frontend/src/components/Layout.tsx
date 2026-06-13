@@ -177,6 +177,7 @@ function SidebarNav({ onNavigate }: { onNavigate: () => void }) {
           key={n.to}
           to={n.to}
           onClick={onNavigate}
+          data-cy={`nav-${n.to.replace("/", "")}`}
           className={({ isActive }: { isActive: boolean }) =>
             `relative flex items-center gap-3 px-3.5 py-3 rounded-md font-semibold text-[14.5px] text-left w-full ${isActive ? "nav-active" : "text-secondary"}`
           }

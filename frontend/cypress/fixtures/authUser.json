@@ -1,0 +1,9 @@
+{
+  "idCliente": 1,
+  "nombre": "Andrés",
+  "apellido1": "Solano",
+  "apellido2": "Vargas",
+  "correo": "andres@correo.com",
+  "telefono": "8888-8888",
+  "fecha_registro": "2024-01-15"
+}
