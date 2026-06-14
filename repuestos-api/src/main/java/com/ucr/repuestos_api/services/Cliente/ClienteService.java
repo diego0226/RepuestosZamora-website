@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ucr.repuestos_api.Exceptions.ClienteNotFoundException;
+import com.ucr.repuestos_api.Exceptions.EmailAlreadyExistsException;
+import com.ucr.repuestos_api.dtos.Cliente.ClientePerfilRequestDto;
 import com.ucr.repuestos_api.dtos.Cliente.ClienteRequestDto;
 import com.ucr.repuestos_api.entities.Cliente.Cliente;
 import com.ucr.repuestos_api.repositories.Cliente.ClienteRepository;
@@ -48,6 +50,28 @@ public class ClienteService implements IClienteService {
         cliente.setTelefono(clienteRequestDto.getTelefono());
         cliente.setCorreo(clienteRequestDto.getCorreo());
         cliente.setContrasena(clienteRequestDto.getContrasena());
+
+        return clienteRepository.updateCliente(cliente);
+    }
+
+    @Override
+    public Cliente updatePerfil(Integer id, ClientePerfilRequestDto clientePerfilRequestDto) {
+
+        var cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new ClienteNotFoundException("Cliente no encontrado"));
+
+        // Si el correo cambió, se valida que no esté en uso por otro cliente distinto
+        var correoNuevo = clientePerfilRequestDto.getCorreo();
+        if (!cliente.getCorreo().equals(correoNuevo)) {
+            clienteRepository.findByCorreo(correoNuevo).ifPresent(existente -> {
+                if (!existente.getIdCliente().equals(id)) {
+                    throw new EmailAlreadyExistsException("El correo ya está registrado");
+                }
+            });
+        }
+
+        cliente.setCorreo(correoNuevo);
+        cliente.setTelefono(clientePerfilRequestDto.getTelefono());
 
         return clienteRepository.updateCliente(cliente);
     }

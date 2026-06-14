@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.ucr.repuestos_api.dtos.Cliente.ClientePerfilRequestDto;
 import com.ucr.repuestos_api.dtos.Cliente.ClienteRequestDto;
 import com.ucr.repuestos_api.dtos.Cliente.ClienteResponseDto;
 import com.ucr.repuestos_api.mappers.Cliente.ClienteMapper;
@@ -37,6 +38,13 @@ public class ClienteFacade implements IClienteFacade {
     @Transactional
     public ClienteResponseDto updateCliente(Integer id, ClienteRequestDto clienteRequestDto) {
         var entity = clienteService.updateCliente(id, clienteRequestDto);
+        return clienteMapper.toClienteResponsiveDto(entity);
+    }
+
+    @Override
+    @Transactional
+    public ClienteResponseDto updatePerfil(Integer id, ClientePerfilRequestDto clientePerfilRequestDto) {
+        var entity = clienteService.updatePerfil(id, clientePerfilRequestDto);
         return clienteMapper.toClienteResponsiveDto(entity);
     }
 

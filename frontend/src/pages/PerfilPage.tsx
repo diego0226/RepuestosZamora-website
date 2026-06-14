@@ -1,14 +1,17 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Mail, Phone, Calendar, LogOut } from "lucide-react";
+import { User, Mail, Phone, Calendar, LogOut, Pencil } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { SectionTitle } from "../components/ui/SectionTitle";
 import { Button } from "../components/ui/Button";
 import { ViewIn } from "../components/ui/ViewIn";
 import { fechaLegible } from "../components/ui/format";
+import { PerfilModal } from "../components/PerfilModal";
 
 export function PerfilPage() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [editando, setEditando] = useState(false);
 
   if (!user) {
     return <p className="text-secondary">No hay información del usuario disponible.</p>;
@@ -39,6 +42,7 @@ export function PerfilPage() {
             <div className="display text-white text-[26px]">{user.nombre} {user.apellido1}</div>
             <div className="mono text-[12.5px] text-secondary mt-1">Cliente #{user.idCliente}</div>
           </div>
+          <Button variant="ghost" icon={Pencil} onClick={() => setEditando(true)} className="ml-auto">Editar perfil</Button>
         </div>
 
         <div className="p-7">
@@ -67,6 +71,8 @@ export function PerfilPage() {
           </div>
         </div>
       </div>
+
+      <PerfilModal open={editando} onClose={() => setEditando(false)} />
     </ViewIn>
   );
 }

@@ -5,9 +5,11 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
+import com.ucr.repuestos_api.dtos.Cliente.ClientePerfilRequestDto;
 import com.ucr.repuestos_api.dtos.Cliente.ClienteRequestDto;
 import com.ucr.repuestos_api.dtos.Cliente.ClienteResponseDto;
 import com.ucr.repuestos_api.entities.Cliente.Cliente;
+import com.ucr.repuestos_api.models.Cliente.ClientePerfilRequestModel;
 import com.ucr.repuestos_api.models.Cliente.ClienteRequestModel;
 import com.ucr.repuestos_api.models.Cliente.ClienteResponseModel;
 
@@ -54,6 +56,12 @@ public class ClienteMapper {
         return new ClienteRequestDto(clienteRequestModel.nombre(), clienteRequestModel.apellido1(),
                 clienteRequestModel.apellido2(), clienteRequestModel.telefono(), clienteRequestModel.correo(),
                 clienteRequestModel.contrasena());
+    }
+
+    public ClientePerfilRequestDto toClientePerfilRequestDto(ClientePerfilRequestModel clientePerfilRequestModel) {
+        isNull(clientePerfilRequestModel);
+
+        return new ClientePerfilRequestDto(clientePerfilRequestModel.correo(), clientePerfilRequestModel.telefono());
     }
 
     private <T> T isNull(T value) {

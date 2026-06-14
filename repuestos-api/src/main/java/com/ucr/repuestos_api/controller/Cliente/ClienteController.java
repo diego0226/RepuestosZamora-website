@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ucr.repuestos_api.dtos.Cliente.ClienteResponseDto;
 import com.ucr.repuestos_api.facade.Cliente.IClienteFacade;
 import com.ucr.repuestos_api.mappers.Cliente.ClienteMapper;
+import com.ucr.repuestos_api.models.Cliente.ClientePerfilRequestModel;
 import com.ucr.repuestos_api.models.Cliente.ClienteRequestModel;
 import com.ucr.repuestos_api.models.Cliente.ClienteResponseModel;
 
@@ -46,6 +47,14 @@ public class ClienteController {
     public ClienteResponseDto update(@PathVariable("id") Integer id,@Valid @RequestBody ClienteRequestModel clienteRequestModel) {
         var dto = clienteMapper.toClienteRequestDto(clienteRequestModel);
         return clienteFacade.updateCliente(id, dto);
+    }
+
+    // Edición del perfil del cliente (solo correo y teléfono), sin requerir la contraseña.
+    @PutMapping(path = "/{id}/perfil")
+    public ClienteResponseDto updatePerfil(@PathVariable("id") Integer id,
+            @Valid @RequestBody ClientePerfilRequestModel clientePerfilRequestModel) {
+        var dto = clienteMapper.toClientePerfilRequestDto(clientePerfilRequestModel);
+        return clienteFacade.updatePerfil(id, dto);
     }
 
      @DeleteMapping(path =  "/{id}")
