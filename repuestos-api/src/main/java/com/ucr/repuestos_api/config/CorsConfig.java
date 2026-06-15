@@ -15,12 +15,15 @@ public class CorsConfig {
 
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(
+        // allowedOriginPatterns permite comodines (*) y es compatible con
+        // allowCredentials(true), a diferencia de allowedOrigins("*").
+        // Cubre los puertos de desarrollo local y cualquier despliegue en Vercel
+        // (producción y previews: https://<lo-que-sea>.vercel.app).
+        config.setAllowedOriginPatterns(
                 List.of(
-                        "http://localhost:5173/",
-                        "http://localhost:3000/",
                         "http://localhost:5173",
-                        "http://localhost:3000"
+                        "http://localhost:3000",
+                        "https://*.vercel.app"
                 )
         );
 
