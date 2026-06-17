@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Calendar, Clock, Car, Shield, User, Phone, Check } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Car, Shield, User, Phone, Check, X } from "lucide-react";
 import type { Cita } from "../models/responses/Cita";
-import { getCitaById } from "../services/CitasService";
+import { getCitaById, cancelCita } from "../services/CitasService";
 import { Badge } from "./ui/Badge";
 import { EstadoBadge } from "./ui/EstadoBadge";
 import { Button } from "./ui/Button";
@@ -28,6 +28,7 @@ export function CitaDetail() {
   const navigate = useNavigate();
   const [cita, setCita] = useState<Cita | null>(null);
   const [error, setError] = useState("");
+  const [cancelando, setCancelando] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -35,6 +36,22 @@ export function CitaDetail() {
       .then(setCita)
       .catch((err) => setError(err instanceof Error ? err.message : "Error al cargar la cita"));
   }, [id]);
+
+  const handleCancelar = async () => {
+    if (!cita) return;
+    if (!window.confirm("¿Seguro que deseas cancelar esta cita?")) return;
+    setCancelando(true);
+    setError("");
+    try {
+      await cancelCita(cita.id);
+      const actualizada = await getCitaById(cita.id);
+      setCita(actualizada);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error al cancelar la cita");
+    } finally {
+      setCancelando(false);
+    }
+  };
 
   if (error) return <p className="text-[#ff5252]">{error}</p>;
   if (!cita) return <p className="text-secondary">Cargando…</p>;
@@ -124,7 +141,18 @@ export function CitaDetail() {
             ))}
           </div>
           {!cancelada && (
-            <Button variant="outlineRed" full icon={Phone}>Contactar al taller</Button>
+            <>
+              <Button variant="outlineRed" full icon={Phone}>Contactar al taller</Button>
+              <Button
+                variant="ghost"
+                full
+                icon={X}
+                onClick={handleCancelar}
+                disabled={cancelando}
+              >
+                {cancelando ? "Cancelando…" : "Cancelar cita"}
+              </Button>
+            </>
           )}
         </div>
       </div>

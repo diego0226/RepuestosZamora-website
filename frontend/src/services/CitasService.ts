@@ -38,3 +38,15 @@ export async function createCita(data: CitaRequest): Promise<Cita> {
 
   return await response.json();
 }
+
+// Cancela una cita (DELETE /api/citas/{id}); en el backend hace un soft-delete
+// que cambia el estado de la cita a "cancelada".
+export async function cancelCita(id: number): Promise<void> {
+  const response = await fetch(`${API_URL}/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al cancelar la cita");
+  }
+}
